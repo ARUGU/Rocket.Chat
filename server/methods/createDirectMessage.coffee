@@ -51,6 +51,7 @@ Meteor.methods
 				u:
 					_id: me._id
 					username: me.username
+					realname: to.name # work around to display the name instead of username
 		if to.active is false
 			upsertSubscription.$set.archived = true
 
@@ -74,7 +75,7 @@ Meteor.methods
 				u:
 					_id: to._id
 					username: to.username
-
+					realname: me.name # work around to display the name instead of username
 		return {
 			rid: rid
 		}

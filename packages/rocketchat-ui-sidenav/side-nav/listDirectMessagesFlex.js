@@ -15,6 +15,12 @@ Template.listDirectMessagesFlex.helpers({
 	},
 	hidden() {
 		return !!RocketChat.models.Subscriptions.findOne({ name: this.name, open: false });
+	},
+	userRealName() {
+		if(this.u.realname)
+			return this.u.realname;
+		else 
+			return this.name;
 	}
 });
 
@@ -67,7 +73,7 @@ Template.listDirectMessagesFlex.onCreated(function() {
 	this.roomsList = new ReactiveVar([]);
 	this.autorun(() => {
 		this.hasMore.set(true);
-		let options = { fields: { name: 1 } };
+		let options = { fields: {name: 1, u: 1} };
 		if (_.isNumber(this.limit.get())) {
 			options.limit = this.limit.get();
 		}

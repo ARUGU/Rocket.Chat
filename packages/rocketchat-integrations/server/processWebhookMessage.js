@@ -13,7 +13,11 @@ this.processWebhookMessage = function(messageObj, user, defaultValues) {
 
 	channel = messageObj.channel || defaultValues.channel;
 
-	channels = [].concat(channel);
+	if(channel.indexOf(',') > 0) {
+		channels = channel.split(',');
+	}else {
+		channels = [].concat(channel);
+	}
 
 	for (channel of channels) {
 		channelType = channel[0];
