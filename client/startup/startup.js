@@ -1,6 +1,18 @@
 /* globals UserPresence, fireGlobalEvent, isRtl */
 
 import moment from 'moment';
+import toastr from 'toastr';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github.css';
+
+hljs.initHighlightingOnLoad();
+
+if (window.DISABLE_ANIMATION) {
+	toastr.options.timeOut = 1;
+	toastr.options.showDuration = 0;
+	toastr.options.hideDuration = 0;
+	toastr.options.extendedTimeOut = 0;
+}
 
 Meteor.startup(function() {
 	TimeSync.loggingEnabled = false;
@@ -32,6 +44,7 @@ Meteor.startup(function() {
 		return RocketChat.settings.get('Language') || defaultAppLanguage();
 	};
 
+	const availableLanguages = TAPi18n.getLanguages();
 	const loadedLanguages = [];
 
 	window.setLanguage = function(language) {
@@ -51,20 +64,23 @@ Meteor.startup(function() {
 			$('html').removeClass('rtl');
 		}
 
-		language = language.split('-').shift();
+		if (!availableLanguages[language]) {
+			language = language.split('-').shift();
+		}
+
 		TAPi18n.setLanguage(language);
 
 		language = language.toLowerCase();
 		if (language !== 'en') {
 			Meteor.call('loadLocale', language, (err, localeFn) => {
-				Function(localeFn).call({moment: moment});
+				Function(localeFn).call({moment});
 				moment.locale(language);
 			});
 		}
 	};
 
 	Meteor.subscribe('userData', function() {
-		const userLanguage = Meteor.user() ? Meteor.user().language : window.defaultUserLanguage();
+		const userLanguage = Meteor.user() && Meteor.user().language ? Meteor.user().language : window.defaultUserLanguage();
 
 		if (localStorage.getItem('userLanguage') !== userLanguage) {
 			localStorage.setItem('userLanguage', userLanguage);

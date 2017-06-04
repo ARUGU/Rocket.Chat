@@ -5,8 +5,8 @@ Importer.HipChat = class Importer.HipChat extends Importer.Base
 	@RoomPrefix = 'hipchat_export/rooms/'
 	@UsersPrefix = 'hipchat_export/users/'
 
-	constructor: (name, descriptionI18N, fileTypeRegex) ->
-		super(name, descriptionI18N, fileTypeRegex)
+	constructor: (name, descriptionI18N, mimeType) ->
+		super(name, descriptionI18N, mimeType)
 		@logger.debug('Constructed a new Slack Importer.')
 		@userTags = []
 
@@ -221,7 +221,7 @@ Importer.HipChat = class Importer.HipChat extends Importer.Base
 
 	getRocketUser: (hipchatId) =>
 		for user in @users.users when user.user_id is hipchatId
-			return RocketChat.models.Users.findOneById user.rocketId, { fields: { username: 1 }}
+			return RocketChat.models.Users.findOneById user.rocketId, { fields: { username: 1, name: 1 }}
 
 	convertHipChatMessageToRocketChat: (message) =>
 		if message?
